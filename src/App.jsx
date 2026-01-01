@@ -51,7 +51,7 @@ const Navbar = ({ currentPage, setCurrentPage, user, setUser, setAuthModal }) =>
 
   const navLinks = [
     { name: 'Home', id: 'home' },
-    { name: 'Our Philosophy', id: 'philosophy' },
+    { name: 'About Us', id: 'about' },
     { name: 'Programs', id: 'programs' },
     { name: 'Reviews', id: 'reviews' },
   ];
@@ -61,7 +61,7 @@ const Navbar = ({ currentPage, setCurrentPage, user, setUser, setAuthModal }) =>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20 items-center">
           <div className="flex items-center cursor-pointer group" onClick={() => setCurrentPage('home')}>
-            <img src="/Tulasya.jpeg" alt="Tulsaya Logo" className="h-10 w-10 mr-2 rounded-full group-hover:rotate-12 transition-transform" />
+            <img src="/Tulasya.jpeg" alt="Tulsaya Logo" className="h-8 w-8 md:h-10 md:w-10 mr-2 rounded-full object-cover border-2 border-emerald-600 group-hover:rotate-12 transition-transform" />
             <span className="text-lg md:text-2xl font-bold tracking-tight text-emerald-900">TULASYA</span>
           </div>
 
@@ -195,7 +195,7 @@ const AuthModal = ({ isOpen, onClose, setUser }) => {
 
 const HomePage = ({ setCurrentPage }) => (
   <div className="animate-in fade-in duration-700">
-    <section className="relative h-screen flex items-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center overflow-hidden">
       <div className="absolute inset-0 z-0">
         <img 
           src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&q=80&w=2000" 
@@ -215,35 +215,47 @@ const HomePage = ({ setCurrentPage }) => (
             Heal Naturally. <br />
             <span className="text-emerald-400">Live Consciously.</span>
           </h1>
-          <p className="text-xl text-emerald-50/80 mb-12 leading-relaxed max-w-xl">
+          <p className="text-base md:text-xl text-emerald-50/80 mb-12 leading-relaxed max-w-xl">
             At Tulasya, we believe the body has an in-built power to heal — it only needs the right food, right routine, and right guidance. We offer online naturopathy-based lifestyle support for people who want long-term health, not temporary relief.
           </p>
           <div className="space-y-4 mb-12">
             <div className="flex items-center space-x-3 text-emerald-50">
-              <span className="text-2xl">👉</span>
-              <span className="text-lg">No heavy medicines</span>
+              <span className="text-xl">👉</span>
+              <span className="text-base md:text-lg">No medicines</span>
             </div>
             <div className="flex items-center space-x-3 text-emerald-50">
-              <span className="text-2xl">👉</span>
-              <span className="text-lg">No fear-based treatment</span>
+              <span className="text-xl">👉</span>
+              <span className="text-base md:text-lg">No injections</span>
             </div>
             <div className="flex items-center space-x-3 text-emerald-50">
-              <span className="text-2xl">👉</span>
-              <span className="text-lg">Only simple, natural, sustainable healing</span>
+              <span className="text-xl">👉</span>
+              <span className="text-base md:text-lg">No hospital visits</span>
+            </div>
+            <div className="flex items-center space-x-3 text-emerald-50">
+              <span className="text-xl">👉</span>
+              <span className="text-base md:text-lg">No lifelong dependency</span>
+            </div>
+            <div className="flex items-center space-x-3 text-emerald-50">
+              <span className="text-xl">👉</span>
+              <span className="text-base md:text-lg">100% online guidance</span>
+            </div>
+            <div className="flex items-center space-x-3 text-emerald-50">
+              <span className="text-xl">👉</span>
+              <span className="text-base md:text-lg">Disease-specific lifestyle & diet correction</span>
             </div>
           </div>
           <div className="flex flex-wrap gap-4">
             <button 
               onClick={() => setCurrentPage('programs')}
-              className="px-10 py-5 bg-emerald-500 text-emerald-950 rounded-2xl font-black text-lg hover:bg-emerald-400 transition-all flex items-center shadow-2xl hover:-translate-y-1"
+              className="px-6 py-3 md:px-10 md:py-5 bg-emerald-500 text-emerald-950 rounded-2xl font-black text-base md:text-lg hover:bg-emerald-400 transition-all flex items-center shadow-2xl hover:-translate-y-1"
             >
               Start Your Journey <ArrowRight className="ml-3 h-6 w-6" />
             </button>
             <button 
-              onClick={() => setCurrentPage('philosophy')}
-              className="px-10 py-5 bg-white/10 backdrop-blur-md border border-white/30 text-white rounded-2xl font-bold text-lg hover:bg-white/20 transition-all"
+              onClick={() => setCurrentPage('about')}
+              className="px-6 py-3 md:px-10 md:py-5 bg-white/10 backdrop-blur-md border border-white/30 text-white rounded-2xl font-bold text-base md:text-lg hover:bg-white/20 transition-all"
             >
-              Our Philosophy
+              About Us
             </button>
           </div>
         </div>
@@ -286,13 +298,21 @@ const HomePage = ({ setCurrentPage }) => (
   </div>
 );
 
-const Philosophy = () => {
+const About = () => {
   return (
     <div className="pt-32 pb-24 bg-stone-50 min-h-screen">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
-          <h2 className="text-5xl font-black text-emerald-950">Who We Are</h2>
-          <p className="text-xl text-gray-500">Tulasya is a natural healing initiative guided by the principles of Naturopathy, Yoga, and mindful living.</p>
+          <h2 className="text-5xl font-black text-emerald-950">About Us</h2>
+          <p className="text-xl text-gray-500">Tulasya is a holistic natural healing platform based on Naturopathy, Lifestyle Correction, Food Therapy, Yoga & Pranayama.
+We focus on root cause healing, not symptom suppression.</p>
+        </div>
+
+        <div className="bg-white rounded-[3rem] p-12 shadow-xl mb-20">
+          <h3 className="text-3xl font-bold text-emerald-950 text-center mb-8">Meet Your Natural Healing Guide</h3>
+          <p className="text-lg text-gray-600 text-center max-w-2xl mx-auto leading-relaxed">
+            Deepshika is a certified Naturopath & Yoga practitioner. Through years of practice, I have seen that many chronic diseases do not need medicines — they need correct lifestyle, correct food, and correct breathing. Tulasya was created to help people heal naturally, safely, and sustainably from their homes.
+          </p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-20 items-center mb-32">
@@ -371,31 +391,31 @@ const Philosophy = () => {
 const Programs = () => {
   const programs = [
     {
-      id: 'lifestyle',
-      title: 'Online Lifestyle & Diet Guidance',
-      icon: <Leaf className="h-8 w-8" />,
-      desc: 'Personalised food guidance based on: Body type, Digestive strength, Daily routine, Emotional patterns. (No crash diets, no starvation)',
+      id: 'consultation',
+      title: '1:1 Online Consultation',
+      icon: <HeartPulse className="h-8 w-8" />,
+      desc: 'Personal health discussion, Disease-specific strategy, Fully confidential.',
       color: 'emerald'
     },
     {
-      id: 'digestive',
-      title: 'Digestive & Detox Support',
-      icon: <Droplets className="h-8 w-8" />,
-      desc: 'Support for people dealing with: Constipation, Acidity, Bloating, Fatigue, Poor gut health. Detox is always gentle, seasonal, and safe.',
+      id: 'diet',
+      title: 'Personalised Diet Plans',
+      icon: <Leaf className="h-8 w-8" />,
+      desc: 'No starvation, No expensive foods, Indian home-based meals, Seasonal & practical.',
       color: 'sky'
     },
     {
-      id: 'hormonal',
-      title: 'Hormonal & Metabolic Balance',
-      icon: <HeartPulse className="h-8 w-8" />,
-      desc: 'Lifestyle support for: PCOD/PCOS, Thyroid imbalance, Sugar management (supportive care), Weight imbalance. We do not claim to cure — we help the body stabilise.',
+      id: 'yoga',
+      title: 'Yoga & Pranayama Guidance',
+      icon: <Wind className="h-8 w-8" />,
+      desc: 'Simple & safe, Disease-specific, Age-friendly.',
       color: 'rose'
     },
     {
-      id: 'emotional',
-      title: 'Emotional & Stress Wellness',
-      icon: <Wind className="h-8 w-8" />,
-      desc: 'Because healing is incomplete without emotional balance. Includes: Daily routine correction, Breathing practices, Simple grounding habits, Mind-body awareness.',
+      id: 'lifestyle',
+      title: 'Lifestyle Correction Coaching',
+      icon: <Droplets className="h-8 w-8" />,
+      desc: 'Sleep correction, Stress management, Daily routine healing.',
       color: 'amber'
     }
   ];
@@ -487,7 +507,7 @@ const Footer = () => (
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-16 pb-20 border-b border-white/10">
         <div className="lg:col-span-2">
           <div className="flex items-center mb-8">
-            <Leaf className="h-8 w-8 text-emerald-400 mr-2" />
+            <img src="/Tulasya.jpeg" alt="Tulsaya Logo" className="h-8 w-8 rounded-full object-cover border-2 border-emerald-400 mr-2" />
             <span className="text-2xl font-black tracking-tight">TULASYA</span>
           </div>
           <p className="text-emerald-100/60 max-w-sm leading-relaxed text-lg">
@@ -495,31 +515,44 @@ const Footer = () => (
           </p>
         </div>
         <div>
-          <h4 className="font-bold mb-8 uppercase tracking-widest text-xs text-emerald-500">Navigation</h4>
+          <h4 className="font-bold mb-8 uppercase tracking-widest text-xs text-emerald-500">About Tulasya</h4>
           <ul className="space-y-4 text-emerald-50/70">
-            {['Home', 'Philosophy', 'Programs', 'Reviews'].map(item => (
-              <li key={item}><button className="hover:text-emerald-400 transition-colors font-medium">{item}</button></li>
-            ))}
+            <li><button className="hover:text-emerald-400 transition-colors font-medium">Our Story</button></li>
+            <li><button className="hover:text-emerald-400 transition-colors font-medium">About Us</button></li>
+            <li><button className="hover:text-emerald-400 transition-colors font-medium">Team</button></li>
           </ul>
         </div>
         <div>
-          <h4 className="font-bold mb-8 uppercase tracking-widest text-xs text-emerald-500">Newsletter</h4>
-          <div className="space-y-4">
-            <input 
-              type="email" placeholder="Vitality insights..."
-              className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-emerald-500 outline-none text-white"
-            />
-            <button className="w-full bg-emerald-500 text-emerald-950 font-black py-4 rounded-2xl hover:bg-emerald-400 transition-colors">
-              Subscribe
-            </button>
-          </div>
+          <h4 className="font-bold mb-8 uppercase tracking-widest text-xs text-emerald-500">Services</h4>
+          <ul className="space-y-4 text-emerald-50/70">
+            <li><button className="hover:text-emerald-400 transition-colors font-medium">1:1 Online Consultation</button></li>
+            <li><button className="hover:text-emerald-400 transition-colors font-medium">Personalised Diet Plans</button></li>
+            <li><button className="hover:text-emerald-400 transition-colors font-medium">Yoga & Pranayama Guidance</button></li>
+            <li><button className="hover:text-emerald-400 transition-colors font-medium">Lifestyle Correction Coaching</button></li>
+          </ul>
         </div>
       </div>
-      <div className="pt-10 flex flex-col md:flex-row justify-between items-center text-sm text-emerald-100/40">
-        <p>&copy; 2025 TULASYA Movement. Built for Vitality.</p>
-        <div className="flex space-x-8 mt-6 md:mt-0 font-bold uppercase tracking-widest text-[10px]">
-          <button className="hover:text-emerald-400">Privacy</button>
-          <button className="hover:text-white">Terms</button>
+      <div className="pt-10">
+        <div className="text-center mb-8">
+          <blockquote className="text-2xl md:text-3xl font-light italic text-emerald-200">
+            "Healing is not a pill.<br />It is a lifestyle."
+          </blockquote>
+        </div>
+        <div className="flex flex-col md:flex-row justify-between items-center text-sm text-emerald-100/40">
+          <div className="flex space-x-8 mb-6 md:mb-0">
+            <button className="hover:text-emerald-400">Disclaimer</button>
+            <button className="hover:text-emerald-400">Privacy Policy</button>
+            <button className="hover:text-emerald-400">Contact</button>
+          </div>
+          <div className="flex space-x-4">
+            {/* Social Media Links - placeholders */}
+            <button className="hover:text-emerald-400">Facebook</button>
+            <button className="hover:text-emerald-400">Instagram</button>
+            <button className="hover:text-emerald-400">Twitter</button>
+          </div>
+        </div>
+        <div className="text-center mt-8 pt-8 border-t border-white/10">
+          <p>&copy; 2025 TULASYA Movement. Built for Vitality.</p>
         </div>
       </div>
     </div>
@@ -540,7 +573,7 @@ export default function App() {
   const renderPage = () => {
     switch(currentPage) {
       case 'home': return <HomePage setCurrentPage={setCurrentPage} />;
-      case 'philosophy': return <Philosophy />;
+      case 'about': return <About />;
       case 'programs': return <Programs />;
       case 'reviews': return <Reviews />;
       default: return <HomePage setCurrentPage={setCurrentPage} />;
@@ -557,7 +590,7 @@ export default function App() {
         setAuthModal={setAuthModal}
       />
       
-      <main className="transition-all duration-500">
+      <main className="pt-20 transition-all duration-500">
         {renderPage()}
       </main>
 
