@@ -311,7 +311,7 @@ We focus on root cause healing, not symptom suppression.</p>
         <div className="bg-white rounded-[3rem] p-12 shadow-xl mb-20">
           <h3 className="text-3xl font-bold text-emerald-950 text-center mb-8">Meet Your Natural Healing Guide</h3>
           <p className="text-lg text-gray-600 text-center max-w-2xl mx-auto leading-relaxed">
-            Deepshika is a certified Naturopath & Yoga practitioner. Through years of practice, I have seen that many chronic diseases do not need medicines — they need correct lifestyle, correct food, and correct breathing. Tulasya was created to help people heal naturally, safely, and sustainably from their homes.
+            I am Deepshika, a certified Naturopath, Yoga practitioner and founder of Tulasya. Through years of practice, I have seen that many chronic diseases do not need medicines — they need correct lifestyle, correct food, and correct breathing. Tulasya was created to help people heal naturally, safely, and sustainably from their homes.
           </p>
         </div>
 
