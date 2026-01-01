@@ -62,7 +62,7 @@ const Navbar = ({ currentPage, setCurrentPage, user, setUser, setAuthModal }) =>
         <div className="flex justify-between h-20 items-center">
           <div className="flex items-center cursor-pointer group" onClick={() => setCurrentPage('home')}>
             <img src="/Tulasya.jpeg" alt="Tulsaya Logo" className="h-10 w-10 mr-2 rounded-full group-hover:rotate-12 transition-transform" />
-            <span className="text-2xl font-bold tracking-tight text-emerald-900">TULASYA</span>
+            <span className="text-lg md:text-2xl font-bold tracking-tight text-emerald-900">TULASYA</span>
           </div>
 
           <div className="hidden md:flex items-center space-x-8">
@@ -211,7 +211,7 @@ const HomePage = ({ setCurrentPage }) => (
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span className="text-white text-xs font-bold uppercase tracking-widest">Digital Natural Lifestyle Movement</span>
           </div>
-          <h1 className="text-6xl md:text-8xl font-black text-white leading-[1.1] mb-8">
+          <h1 className="text-4xl md:text-6xl lg:text-8xl font-black text-white leading-[1.1] mb-8">
             Heal Naturally. <br />
             <span className="text-emerald-400">Live Consciously.</span>
           </h1>
