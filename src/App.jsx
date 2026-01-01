@@ -66,7 +66,7 @@ const Navbar = ({ currentPage, setCurrentPage, user, setUser, setAuthModal }) =>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20 items-center">
           <div className="flex items-center cursor-pointer group" onClick={() => setCurrentPage('home')}>
-            <img src="/Tulasya.jpeg" alt="Tulsaya Logo" className="h-8 w-8 md:h-10 md:w-10 mr-2" />
+            <img src="/Tulasaya.png" alt="Tulsaya Logo" className="h-8 w-8 md:h-10 md:w-10 mr-2 rounded-full object-cover" />
             <span className="text-lg md:text-2xl font-bold tracking-tight text-emerald-900">TULASYA</span>
           </div>
 
@@ -620,11 +620,20 @@ const Contact = () => {
 };
 
 const Reviews = () => {
-  const testimonials = [
-    { name: 'Sarah J.', role: '21-Day Graduate', text: '6 months pain-free after 10 years of migraines. Tulasya changed everything.', rating: 5 },
-    { name: 'Michael C.', role: 'Healthcare Professional', text: 'The biological science behind these natural lifestyle changes is undeniable.', rating: 5 },
-    { name: 'Anita R.', role: '7-Day Detox', text: 'Stability in my energy levels I haven\'t felt since my childhood.', rating: 5 }
-  ];
+  const [testimonials, setTestimonials] = useState([
+    { name: 'Sarah J.', text: '6 months pain-free after 10 years of migraines. Tulasya changed everything.', rating: 5 },
+    { name: 'Michael C.', text: 'The biological science behind these natural lifestyle changes is undeniable.', rating: 5 },
+    { name: 'Anita R.', text: 'Stability in my energy levels I haven\'t felt since my childhood.', rating: 5 }
+  ]);
+  const [showForm, setShowForm] = useState(false);
+  const [newReview, setNewReview] = useState({ name: '', text: '', rating: 5 });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setTestimonials([...testimonials, newReview]);
+    setNewReview({ name: '', text: '', rating: 5 });
+    setShowForm(false);
+  };
 
   return (
     <div className="pt-32 pb-24 bg-stone-50 min-h-screen">
@@ -639,11 +648,72 @@ const Reviews = () => {
               <p className="text-xl text-emerald-950 italic mb-10 leading-relaxed">"{t.text}"</p>
               <div>
                 <h4 className="font-black text-emerald-900">{t.name}</h4>
-                <p className="text-sm text-emerald-600 font-bold">{t.role}</p>
               </div>
             </div>
           ))}
         </div>
+
+        <div className="text-center mt-12">
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="px-8 py-4 bg-emerald-600 text-white rounded-2xl font-bold hover:bg-emerald-700 transition-colors"
+          >
+            {showForm ? 'Cancel' : 'Add Review'}
+          </button>
+        </div>
+
+        {showForm && (
+          <div className="mt-12 bg-white p-8 rounded-[2.5rem] shadow-xl max-w-2xl mx-auto">
+            <h3 className="text-2xl font-bold text-emerald-950 mb-6 text-center">Share Your Story</h3>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <input
+                  type="text"
+                  placeholder="Your Name"
+                  value={newReview.name}
+                  onChange={(e) => setNewReview({ ...newReview, name: e.target.value })}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none"
+                />
+              </div>
+              <textarea
+                rows="4"
+                placeholder="Your Review"
+                value={newReview.text}
+                onChange={(e) => setNewReview({ ...newReview, text: e.target.value })}
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none resize-none"
+              ></textarea>
+              <div className="flex items-center space-x-4">
+                <label className="font-semibold text-emerald-950">Rating:</label>
+                <div className="flex space-x-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setNewReview({ ...newReview, rating: star })}
+                      className="focus:outline-none"
+                    >
+                      <Star
+                        className={`h-6 w-6 ${
+                          star <= newReview.rating
+                            ? 'text-yellow-400 fill-yellow-400'
+                            : 'text-gray-300'
+                        }`}
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <button
+                type="submit"
+                className="w-full py-3 bg-emerald-600 text-white rounded-2xl font-bold hover:bg-emerald-700 transition-colors"
+              >
+                Submit Review
+              </button>
+            </form>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -655,7 +725,7 @@ const Footer = () => (
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-16 pb-20 border-b border-white/10">
         <div className="lg:col-span-2">
           <div className="flex items-center mb-8">
-            <img src="/Tulasya.jpeg" alt="Tulsaya Logo" className="h-8 w-8 rounded-full object-cover border-2 border-emerald-400 mr-2" />
+            <img src="/Tulasaya.png" alt="Tulsaya Logo" className="h-8 w-8 rounded-full object-cover border-2 border-emerald-400 mr-2" />
             <span className="text-2xl font-black tracking-tight">TULASYA</span>
           </div>
           <p className="text-emerald-100/60 max-w-sm leading-relaxed text-lg">
@@ -683,7 +753,7 @@ const Footer = () => (
 
       <div className="pb-20 border-b border-white/10">
         <div className="text-center mb-12">
-          <h4 className="text-2xl font-bold text-emerald-400 mb-4">FAQs (बहुत ज़रूरी)</h4>
+          <h4 className="text-2xl font-bold text-emerald-400 mb-4">FAQs</h4>
         </div>
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           <div className="space-y-6">
