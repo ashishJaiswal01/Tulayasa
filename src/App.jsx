@@ -11,7 +11,10 @@ import {
   ArrowRight,
   LogOut,
   Droplets,
-  Zap
+  Zap,
+  Mail,
+  MessageCircle,
+  Phone
 } from 'lucide-react';
 
 /**
@@ -51,9 +54,11 @@ const Navbar = ({ currentPage, setCurrentPage, user, setUser, setAuthModal }) =>
 
   const navLinks = [
     { name: 'Home', id: 'home' },
-    { name: 'About Us', id: 'about' },
+    { name: 'What We Treat', id: 'treat' },
     { name: 'Programs', id: 'programs' },
     { name: 'Reviews', id: 'reviews' },
+    { name: 'About Us', id: 'about' },
+    { name: 'Contact', id: 'contact' },
   ];
 
   return (
@@ -61,7 +66,7 @@ const Navbar = ({ currentPage, setCurrentPage, user, setUser, setAuthModal }) =>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20 items-center">
           <div className="flex items-center cursor-pointer group" onClick={() => setCurrentPage('home')}>
-            <img src="/Tulasya.jpeg" alt="Tulsaya Logo" className="h-8 w-8 md:h-10 md:w-10 mr-2 rounded-full object-cover border-2 border-emerald-600 group-hover:rotate-12 transition-transform" />
+            <img src="/Tulasya.jpeg" alt="Tulsaya Logo" className="h-8 w-8 md:h-10 md:w-10 mr-2" />
             <span className="text-lg md:text-2xl font-bold tracking-tight text-emerald-900">TULASYA</span>
           </div>
 
@@ -388,6 +393,47 @@ We focus on root cause healing, not symptom suppression.</p>
   );
 };
 
+const Treat = () => {
+  const conditions = [
+    'PCOD / PCOS',
+    'Thyroid imbalance',
+    'Diabetes (Type 2)',
+    'High Blood Pressure',
+    'Obesity / Weight Issues',
+    'IBS, Colitis, Constipation',
+    'Acidity, Gas, Fatty Liver',
+    'Joint Pain, Knee Pain, Back Pain',
+    'Cervical & Slip Disc',
+    'Skin issues (eczema, allergy)',
+    'Stress, Anxiety, Poor Sleep'
+  ];
+
+  return (
+    <div className="pt-32 pb-24 bg-white min-h-screen">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="text-center mb-20 space-y-4">
+          <h2 className="text-5xl font-black text-emerald-950">What We Treat</h2>
+          <p className="text-gray-500">Conditions where medicines give temporary relief but lifestyle gives permanent healing.</p>
+        </div>
+
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-stone-50 p-10 rounded-[2.5rem] shadow-xl border border-stone-200">
+            <h3 className="text-3xl font-bold text-emerald-950 mb-8 text-center">Chronic & Lifestyle Conditions</h3>
+            <div className="grid md:grid-cols-2 gap-6">
+              {conditions.map((condition, index) => (
+                <div key={index} className="flex items-center space-x-3">
+                  <CheckCircle className="h-6 w-6 text-emerald-600 flex-shrink-0" />
+                  <span className="text-gray-700">{condition}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Programs = () => {
   const programs = [
     {
@@ -471,6 +517,108 @@ const Programs = () => {
   );
 };
 
+const Contact = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const subject = `Contact from ${name}`;
+    const body = `${message}%0A%0AFrom: ${name}%0AEmail: ${email}`;
+    window.location.href = `mailto:deepajaiswal7275@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
+
+  return (
+    <div className="pt-32 pb-24 bg-stone-50 min-h-screen">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="text-center mb-20 space-y-4">
+          <h2 className="text-5xl font-black text-emerald-950">Contact Us</h2>
+          <p className="text-xl text-gray-500">Start your natural healing journey today 🌿</p>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-20 items-start">
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-2xl font-bold text-emerald-950 mb-4">Get In Touch</h3>
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <Mail className="h-6 w-6 text-emerald-600" />
+                  <span className="text-gray-700">deepajaiswal7275@gmail.com</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold text-emerald-950 mb-4">Quick Contact</h3>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <a
+                  href="https://wa.me/1234567890" // Replace with actual WhatsApp number
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center px-6 py-3 bg-green-600 text-white rounded-2xl font-bold hover:bg-green-700 transition-colors"
+                >
+                  <MessageCircle className="h-5 w-5 mr-2" />
+                  WhatsApp
+                </a>
+                <a
+                  href="tel:+1234567890" // Replace with actual phone number
+                  className="flex items-center justify-center px-6 py-3 bg-emerald-600 text-white rounded-2xl font-bold hover:bg-emerald-700 transition-colors"
+                >
+                  <Phone className="h-5 w-5 mr-2" />
+                  Call
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white p-8 rounded-[2.5rem] shadow-xl">
+            <h3 className="text-2xl font-bold text-emerald-950 mb-6">Send us a Message</h3>
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              <div>
+                <input
+                  type="text"
+                  placeholder="Your Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none"
+                />
+              </div>
+              <div>
+                <input
+                  type="email"
+                  placeholder="Your Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none"
+                />
+              </div>
+              <div>
+                <textarea
+                  rows="5"
+                  placeholder="Your Message"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none resize-none"
+                ></textarea>
+              </div>
+              <button
+                type="submit"
+                className="w-full py-3 bg-emerald-600 text-white rounded-2xl font-bold hover:bg-emerald-700 transition-colors"
+              >
+                Send Message
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Reviews = () => {
   const testimonials = [
     { name: 'Sarah J.', role: '21-Day Graduate', text: '6 months pain-free after 10 years of migraines. Tulasya changed everything.', rating: 5 },
@@ -532,6 +680,35 @@ const Footer = () => (
           </ul>
         </div>
       </div>
+
+      <div className="pb-20 border-b border-white/10">
+        <div className="text-center mb-12">
+          <h4 className="text-2xl font-bold text-emerald-400 mb-4">FAQs (बहुत ज़रूरी)</h4>
+        </div>
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="space-y-6">
+            <div>
+              <h5 className="font-semibold text-emerald-200 mb-2">Q. Is this medical treatment?</h5>
+              <p className="text-emerald-100/80">No. This is natural lifestyle-based guidance.</p>
+            </div>
+            <div>
+              <h5 className="font-semibold text-emerald-200 mb-2">Q. Do I need to stop my medicines?</h5>
+              <p className="text-emerald-100/80">Only after doctor advice. We guide gradually.</p>
+            </div>
+          </div>
+          <div className="space-y-6">
+            <div>
+              <h5 className="font-semibold text-emerald-200 mb-2">Q. Is this safe for elderly?</h5>
+              <p className="text-emerald-100/80">Yes. Plans are gentle & customised.</p>
+            </div>
+            <div>
+              <h5 className="font-semibold text-emerald-200 mb-2">Q. How is consultation done?</h5>
+              <p className="text-emerald-100/80">Online via call / video / WhatsApp.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="pt-10">
         <div className="text-center mb-8">
           <blockquote className="text-2xl md:text-3xl font-light italic text-emerald-200">
@@ -574,6 +751,8 @@ export default function App() {
     switch(currentPage) {
       case 'home': return <HomePage setCurrentPage={setCurrentPage} />;
       case 'about': return <About />;
+      case 'contact': return <Contact />;
+      case 'treat': return <Treat />;
       case 'programs': return <Programs />;
       case 'reviews': return <Reviews />;
       default: return <HomePage setCurrentPage={setCurrentPage} />;
