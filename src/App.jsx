@@ -621,18 +621,44 @@ const Contact = () => {
 
 const Reviews = () => {
   const [testimonials, setTestimonials] = useState([
-    { name: 'Sarah J.', text: '6 months pain-free after 10 years of migraines. Tulasya changed everything.', rating: 5 },
-    { name: 'Michael C.', text: 'The biological science behind these natural lifestyle changes is undeniable.', rating: 5 },
-    { name: 'Anita R.', text: 'Stability in my energy levels I haven\'t felt since my childhood.', rating: 5 }
+    { name: 'Sarah J.', text: '6 months pain-free after 10 years of migraines. Tulasya changed everything.', rating: 5, videoUrl: null },
+    { name: 'Michael C.', text: 'The biological science behind these natural lifestyle changes is undeniable.', rating: 5, videoUrl: null },
+    { name: 'Anita R.', text: 'Stability in my energy levels I haven\'t felt since my childhood.', rating: 5, videoUrl: null }
   ]);
   const [showForm, setShowForm] = useState(false);
-  const [newReview, setNewReview] = useState({ name: '', text: '', rating: 5 });
+  const [newReview, setNewReview] = useState({ name: '', text: '', rating: 5, videoUrl: '' });
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setTestimonials([...testimonials, newReview]);
-    setNewReview({ name: '', text: '', rating: 5 });
+    setNewReview({ name: '', text: '', rating: 5, videoUrl: '' });
     setShowForm(false);
+  };
+
+  const VideoEmbed = ({ url }) => {
+    let embedUrl = '';
+    if (url.includes('youtube.com') || url.includes('youtu.be')) {
+      const videoId = url.split('v=')[1]?.split('&')[0] || url.split('/').pop();
+      embedUrl = `https://www.youtube.com/embed/${videoId}`;
+    } else if (url.includes('instagram.com')) {
+      const parts = url.split('/');
+      const id = parts[4];
+      embedUrl = `https://www.instagram.com/p/${id}/embed/`;
+    } else if (url.includes('facebook.com')) {
+      embedUrl = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=0&width=560`;
+    }
+    if (!embedUrl) return null;
+    return (
+      <iframe
+        src={embedUrl}
+        width="560"
+        height="315"
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+        className="w-full mb-6 rounded-2xl"
+      ></iframe>
+    );
   };
 
   return (
@@ -646,6 +672,7 @@ const Reviews = () => {
                 {[...Array(t.rating)].map((_, i) => <Star key={i} className="h-4 w-4 text-amber-400 fill-amber-400" />)}
               </div>
               <p className="text-xl text-emerald-950 italic mb-10 leading-relaxed">"{t.text}"</p>
+              {t.videoUrl && <VideoEmbed url={t.videoUrl} />}
               <div>
                 <h4 className="font-black text-emerald-900">{t.name}</h4>
               </div>
@@ -684,6 +711,15 @@ const Reviews = () => {
                 required
                 className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none resize-none"
               ></textarea>
+              <div>
+                <input
+                  type="url"
+                  placeholder="Video URL (YouTube, Instagram, Facebook - optional)"
+                  value={newReview.videoUrl}
+                  onChange={(e) => setNewReview({ ...newReview, videoUrl: e.target.value })}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none"
+                />
+              </div>
               <div className="flex items-center space-x-4">
                 <label className="font-semibold text-emerald-950">Rating:</label>
                 <div className="flex space-x-1">
@@ -794,7 +830,7 @@ const Footer = () => (
           <div className="flex space-x-4">
             {/* Social Media Links - placeholders */}
             <button className="hover:text-emerald-400">Facebook</button>
-            <button className="hover:text-emerald-400">Instagram</button>
+            <a href="https://www.instagram.com/tulasaya.naturecure/?utm_source=qr&igsh=MWd4emhtd2VucXh4Zg%3D%3D#" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400">Instagram</a>
             <button className="hover:text-emerald-400">Twitter</button>
           </div>
         </div>

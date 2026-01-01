@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "deploy": "gh-pages -d dist",
+    "server": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -23,8 +24,13 @@
   },
   "homepage": "https://github.com/ashishJaiswal01/Tulayasa#readme",
   "dependencies": {
+    "@supabase/supabase-js": "^2.89.0",
     "@vitejs/plugin-react": "^5.1.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
     "lucide-react": "^0.562.0",
+    "pg": "^8.16.3",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "vite": "^7.3.0"
