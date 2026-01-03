@@ -15,6 +15,8 @@ app.use(express.json());
 const { Pool } = await import('pg');
 export const pool = new Pool(dbConfig);
 
+console.log('entering into server.js');
+
 // Test DB connection
 pool.on('connect', () => {
   console.log('Connected to PostgreSQL');
