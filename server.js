@@ -1,50 +1,58 @@
-// server.js
 import express from 'express';
-import https from 'https';
-import http from 'http';
-import fs from 'fs';
 import cors from 'cors';
-import { dbConfig, serverConfig } from './config.js';
-import reviewRoutes from './routes/reviews.js';
+import http from 'http';
+
+import { serverConfig } from './config.js';
+import { testDb } from './db.js';
+import reviewRoutes from './src/routes/reviews.js';
 
 const app = express();
 
+/**
+ * Middlewares
+ */
 app.use(cors());
 app.use(express.json());
 
-const { Pool } = await import('pg');
-export const pool = new Pool(dbConfig);
-
-console.log('entering into server.js');
-
-// Test DB connection
-pool.on('connect', () => {
-  console.log('Connected to PostgreSQL');
+/**
+ * Health check
+ * - Used by browser, load balancer, monitoring
+ */
+app.get('/health', async (_, res) => {
+  res.status(200).json({
+    status: 'UP',
+    service: 'review-service'
+  });
 });
 
-pool.on('error', (err) => {
-  console.error('Unexpected error on idle client', err);
-  process.exit(-1);
-});
-
-// Routes
+/**
+ * API Routes
+ */
 app.use('/api/reviews', reviewRoutes);
 
-// Health check
-app.get('/health', (req, res) => {
-  res.json({ status: 'OK' });
+/**
+ * Server bootstrap
+ */
+async function start() {
+  try {
+    // 1. Verify DB connectivity (fail fast)
+    await testDb();
+    console.log('✅ Connected to Supabase PostgreSQL');
+
+    // 2. Start HTTP server only AFTER DB is ready
+    http.createServer(app).listen(serverConfig.port, () => {
+      console.log(`🚀 Server running on port ${serverConfig.port}`);
+    });
+
+  } catch (err) {
+    console.error('❌ Failed to start server:', err.message);
+    process.exit(1);
+  }
+}
+app.use((req, res, next) => {
+  console.log('➡️', req.method, req.url, req.body);
+  next();
 });
 
-if (serverConfig.https) {
-  const options = {
-    key: fs.readFileSync(serverConfig.keyPath),
-    cert: fs.readFileSync(serverConfig.certPath),
-  };
-  https.createServer(options, app).listen(serverConfig.port, () => {
-    console.log(`HTTPS Server running on port ${serverConfig.port}`);
-  });
-} else {
-  http.createServer(app).listen(serverConfig.port, () => {
-    console.log(`HTTP Server running on port ${serverConfig.port}`);
-  });
-}
+
+start();

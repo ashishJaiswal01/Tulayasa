@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { fetchReviews, submitReview } from './api/reviewsApi';
 import { 
   Leaf, 
   Wind, 
@@ -128,6 +129,7 @@ const Navbar = ({ currentPage, setCurrentPage, user, setUser, setAuthModal }) =>
   );
 };
 
+
 // --- FEATURE COMPONENTS ---
 
 const AuthModal = ({ isOpen, onClose, setUser }) => {
@@ -141,7 +143,7 @@ const AuthModal = ({ isOpen, onClose, setUser }) => {
     setUser({ name: formData.name || formData.email.split('@')[0], email: formData.email });
     onClose();
   };
-
+  
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-emerald-950/40 backdrop-blur-md" onClick={onClose} />
@@ -580,7 +582,7 @@ const About = () => {
               </div>
               <h3 className="text-3xl md:text-4xl font-black text-white mb-6">A Personal Promise</h3>
               <p className="text-xl md:text-2xl text-white/95 leading-relaxed font-medium max-w-3xl mx-auto italic">
-                "I will guide you with honesty, care and patience — exactly as I once needed for myself."
+                "Tulasya will guide you with honesty, care and patience — exactly as I once needed for myself."
               </p>
             </div>
           </div>
@@ -597,7 +599,7 @@ const About = () => {
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 <span className="text-xs font-bold uppercase tracking-widest">Important Notice</span>
               </div>
-              <h3 className="text-4xl md:text-5xl font-black mb-6">IMPORTANT NOTE</h3>
+              {/*<h3 className="text-4xl md:text-5xl font-black mb-6">IMPORTANT NOTE</h3>*/}
               <p className="text-xl md:text-2xl text-emerald-50/90 max-w-3xl mx-auto leading-relaxed font-medium">
                 Tulasya provides lifestyle and wellness guidance only. We do not replace medical treatment.
               </p>
@@ -851,7 +853,7 @@ const Contact = () => {
     e.preventDefault();
     const subject = `Contact from ${name}`;
     const body = `${message}%0A%0AFrom: ${name}%0AEmail: ${email}`;
-    window.location.href = `mailto:deepajaiswal7275@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = `mailto:tulasya.care@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
 
   return (
@@ -869,7 +871,7 @@ const Contact = () => {
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
                   <Mail className="h-6 w-6 text-emerald-600" />
-                  <span className="text-gray-700">deepajaiswal7275@gmail.com</span>
+                  <span className="text-gray-700">tulasya.care@gmail.com</span>
                 </div>
               </div>
             </div>
@@ -945,140 +947,171 @@ const Contact = () => {
 };
 
 const Reviews = () => {
-  const [testimonials, setTestimonials] = useState([
-    { name: 'Sarah J.', text: '6 months pain-free after 10 years of migraines. Tulasya changed everything.', rating: 5, videoUrl: null },
-    { name: 'Michael C.', text: 'The biological science behind these natural lifestyle changes is undeniable.', rating: 5, videoUrl: null },
-    { name: 'Anita R.', text: 'Stability in my energy levels I haven\'t felt since my childhood.', rating: 5, videoUrl: null }
-  ]);
+  const [testimonials, setTestimonials] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [newReview, setNewReview] = useState({ name: '', text: '', rating: 5, videoUrl: '' });
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const [newReview, setNewReview] = useState({
+    name: '',
+    text: '',
+    rating: 5,
+    videoUrl: ''
+  });
+
+  // Fetch reviews
+  useEffect(() => {
+    fetchReviews()
+      .then(setTestimonials)
+      .catch(err => console.error('Failed to load reviews', err));
+  }, []);
+
+  // Submit review
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setTestimonials([...testimonials, newReview]);
-    setNewReview({ name: '', text: '', rating: 5, videoUrl: '' });
-    setShowForm(false);
+    setLoading(true);
+
+    const payload = {
+      reviewer_name: newReview.name,
+      review_text: newReview.text,
+      rating: newReview.rating,
+      video_url: newReview.videoUrl || null
+    };
+
+    try {
+      await submitReview(payload);
+      const updated = await fetchReviews();
+      setTestimonials(updated);
+
+      alert('Thank you! Your review has been submitted.');
+
+      setNewReview({ name: '', text: '', rating: 5, videoUrl: '' });
+      setShowForm(false);
+    } catch (err) {
+      console.error(err);
+      alert('Failed to submit review');
+    } finally {
+      setLoading(false);
+    }
   };
 
+    // Video embed helper
   const VideoEmbed = ({ url }) => {
+    if (!url) return null;
+
     let embedUrl = '';
+
     if (url.includes('youtube.com') || url.includes('youtu.be')) {
-      const videoId = url.split('v=')[1]?.split('&')[0] || url.split('/').pop();
-      embedUrl = `https://www.youtube.com/embed/${videoId}`;
+      const id = url.includes('v=')
+        ? url.split('v=')[1].split('&')[0]
+        : url.split('/').pop();
+      embedUrl = `https://www.youtube.com/embed/${id}`;
     } else if (url.includes('instagram.com')) {
-      const parts = url.split('/');
-      const id = parts[4];
-      embedUrl = `https://www.instagram.com/p/${id}/embed/`;
+      const id = url.split('/p/')[1]?.split('/')[0];
+      embedUrl = `https://www.instagram.com/p/${id}/embed`;
     } else if (url.includes('facebook.com')) {
-      embedUrl = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=0&width=560`;
+      embedUrl = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false`;
     }
+
     if (!embedUrl) return null;
+
     return (
       <iframe
         src={embedUrl}
-        width="560"
-        height="315"
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        className="w-full rounded-xl mb-4"
+        height="240"
+        allow="autoplay; encrypted-media"
         allowFullScreen
-        className="w-full mb-6 rounded-2xl"
-      ></iframe>
+        title="review-video"
+      />
     );
   };
 
   return (
     <div className="pt-32 pb-24 bg-stone-50 min-h-screen">
-      <div className="max-w-7xl mx-auto px-6">
-        <h2 className="text-5xl font-black text-emerald-950 text-center mb-20">Movement Stories</h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          {testimonials.map((t, idx) => (
-            <div key={idx} className="bg-white p-12 rounded-[3rem] shadow-xl shadow-stone-200 border border-stone-100">
-              <div className="flex mb-6 space-x-1">
-                {[...Array(t.rating)].map((_, i) => <Star key={i} className="h-4 w-4 text-amber-400 fill-amber-400" />)}
+      <div className="max-w-6xl mx-auto px-6">
+        <h2 className="text-4xl font-bold mb-12 text-center">Reviews</h2>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          {testimonials.map((r, i) => (
+            <div key={i} className="bg-white p-6 rounded-xl shadow">
+              <div className="flex mb-2">
+                {[...Array(r.rating)].map((_, j) => (
+                  <Star key={j} className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                ))}
               </div>
-              <p className="text-xl text-emerald-950 italic mb-10 leading-relaxed">"{t.text}"</p>
-              {t.videoUrl && <VideoEmbed url={t.videoUrl} />}
-              <div>
-                <h4 className="font-black text-emerald-900">{t.name}</h4>
-              </div>
+
+              <p className="italic mb-3">"{r.review_text}"</p>
+
+              {r.video_url && <VideoEmbed url={r.video_url} />}
+
+              <p className="font-bold mt-2">{r.reviewer_name}</p>
             </div>
           ))}
         </div>
 
-        <div className="text-center mt-12">
+        <div className="text-center mt-10">
           <button
             onClick={() => setShowForm(!showForm)}
-            className="px-8 py-4 bg-emerald-600 text-white rounded-2xl font-bold hover:bg-emerald-700 transition-colors"
+            className="px-6 py-3 bg-emerald-600 text-white rounded-xl"
           >
             {showForm ? 'Cancel' : 'Add Review'}
           </button>
         </div>
 
         {showForm && (
-          <div className="mt-12 bg-white p-8 rounded-[2.5rem] shadow-xl max-w-2xl mx-auto">
-            <h3 className="text-2xl font-bold text-emerald-950 mb-6 text-center">Share Your Story</h3>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <input
-                  type="text"
-                  placeholder="Your Name"
-                  value={newReview.name}
-                  onChange={(e) => setNewReview({ ...newReview, name: e.target.value })}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none"
-                />
-              </div>
-              <textarea
-                rows="4"
-                placeholder="Your Review"
-                value={newReview.text}
-                onChange={(e) => setNewReview({ ...newReview, text: e.target.value })}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none resize-none"
-              ></textarea>
-              <div>
-                <input
-                  type="url"
-                  placeholder="Video URL (YouTube, Instagram, Facebook - optional)"
-                  value={newReview.videoUrl}
-                  onChange={(e) => setNewReview({ ...newReview, videoUrl: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none"
-                />
-              </div>
-              <div className="flex items-center space-x-4">
-                <label className="font-semibold text-emerald-950">Rating:</label>
-                <div className="flex space-x-1">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      type="button"
-                      onClick={() => setNewReview({ ...newReview, rating: star })}
-                      className="focus:outline-none"
-                    >
-                      <Star
-                        className={`h-6 w-6 ${
-                          star <= newReview.rating
-                            ? 'text-yellow-400 fill-yellow-400'
-                            : 'text-gray-300'
-                        }`}
-                      />
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <button
-                type="submit"
-                className="w-full py-3 bg-emerald-600 text-white rounded-2xl font-bold hover:bg-emerald-700 transition-colors"
-              >
-                Submit Review
-              </button>
-            </form>
-          </div>
+          <form
+            onSubmit={handleSubmit}
+            className="mt-8 bg-white p-6 rounded-xl shadow max-w-xl mx-auto space-y-4"
+          >
+            <input
+              placeholder="Your name"
+              value={newReview.name}
+              onChange={(e) => setNewReview({ ...newReview, name: e.target.value })}
+              className="w-full border p-2 rounded"
+              required
+            />
+
+            <textarea
+              placeholder="Your review"
+              value={newReview.text}
+              onChange={(e) => setNewReview({ ...newReview, text: e.target.value })}
+              className="w-full border p-2 rounded"
+              rows={4}
+              required
+            />
+
+            <input
+              type="url"
+              placeholder="Video URL (YouTube / Instagram / Facebook - optional)"
+              value={newReview.videoUrl}
+              onChange={(e) => setNewReview({ ...newReview, videoUrl: e.target.value })}
+              className="w-full border p-2 rounded"
+            />
+
+            <select
+              value={newReview.rating}
+              onChange={(e) => setNewReview({ ...newReview, rating: Number(e.target.value) })}
+              className="w-full border p-2 rounded"
+            >
+              {[5, 4, 3, 2, 1].map(v => (
+                <option key={v} value={v}>{v} Stars</option>
+              ))}
+            </select>
+
+            <button
+              type="submit"
+              className="w-full bg-emerald-600 text-white py-2 rounded"
+            >
+              Submit Review
+            </button>
+          </form>
         )}
       </div>
     </div>
   );
 };
+
+
 
 const Footer = () => (
   <footer className="bg-emerald-950 text-white py-24">
