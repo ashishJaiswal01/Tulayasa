@@ -1,4 +1,4 @@
-name: Deploy Tulasya UI
+name: Deploy UI to GitHub Pages
 
 on:
   push:
@@ -6,16 +6,20 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node
@@ -25,17 +29,17 @@ jobs:
 
       - name: Install dependencies
         working-directory: ./web-ui
-        run: npm install
+        run: npm ci
 
-      - name: Build project
+      - name: Build
         working-directory: ./web-ui
         run: npm run build
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v2
         with:
-          name: dist
-          path: web-ui/dist/
+          path: web-ui/dist
+          name: github-pages
 
   deploy:
     needs: build
@@ -45,11 +49,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
