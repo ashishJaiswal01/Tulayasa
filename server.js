@@ -2,9 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import http from 'http';
 
-import { serverConfig } from './config.js';
-import { testDb } from './db.js';
-import reviewRoutes from './src/routes/reviews.js';
+import { serverConfig } from './review-worker/config.js';
+import { testDb } from './review-worker/royal-flower-caaf/db.js';
+import reviewRoutes from './review-worker/royal-flower-caaf/src/routes/reviews.js';
 
 const app = express();
 
