@@ -1,4 +1,4 @@
-import { signIn } from './auth/authApi'
+import { loginUser } from "../auth/authApi";
 
 async function handleLogin() {
   const email = "...";
