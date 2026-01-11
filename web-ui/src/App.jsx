@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { fetchReviews, submitReview } from './api/reviewsApi';
+import { supabase } from './supabaseClient';
+import Signup from "./pages/Signup";
+import login from "./pages/login";
 import { 
   Leaf, 
   Wind, 
@@ -86,8 +89,17 @@ const Navbar = ({ currentPage, setCurrentPage, user, setUser, setAuthModal }) =>
             
             {user ? (
               <div className="flex items-center space-x-4 pl-4 border-l border-emerald-100">
-                <span className="text-sm font-semibold text-emerald-800">Hi, {user.name}</span>
-                <button onClick={() => setUser(null)} className="p-2 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors">
+                <span className="text-sm font-semibold text-emerald-800">
+                  Hi, {user.name}
+                </span>
+                <button
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                    localStorage.removeItem("token");
+                    setUser(null);
+                  }}
+                  className="p-2 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
+                >
                   <LogOut className="h-5 w-5" />
                 </button>
               </div>
@@ -138,11 +150,50 @@ const AuthModal = ({ isOpen, onClose, setUser }) => {
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setUser({ name: formData.name || formData.email.split('@')[0], email: formData.email });
-    onClose();
+  
+    try {
+      if (isLogin) {
+        // Sign in
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: formData.email,
+          password: formData.password
+        });
+  
+        if (error) throw error;
+  
+        // Store token
+        localStorage.setItem("token", data.session.access_token);
+  
+        setUser({ 
+          name: data.user.email.split("@")[0], 
+          email: data.user.email 
+        });
+      } else {
+        // Sign up
+        const { data, error } = await supabase.auth.signUp({
+          email: formData.email,
+          password: formData.password
+        });
+  
+        if (error) throw error;
+  
+        alert("🎉 Account created — check your inbox to verify your email!");
+  
+        setUser({
+          name: formData.name || formData.email.split('@')[0],
+          email: formData.email
+        });
+      }
+  
+      setAuthModal(false);
+  
+    } catch (err) {
+      alert(err.message);
+    }
   };
+  
   
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
