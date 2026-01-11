@@ -1,29 +1,33 @@
-import { supabase } from '../supabaseClient';
+// src/auth/authApi.js
+import { supabase } from "../supabaseClient";
 
-// Signup user
-export async function signUp(email, password) {
+// Register User
+export async function registerUser({ name, email, password }) {
   const { data, error } = await supabase.auth.signUp({
     email,
-    password
+    password,
+    options: {
+      data: { name }
+    },
   });
 
   if (error) throw error;
   return data;
 }
 
-// Login user
-export async function signIn(email, password) {
+// Login User
+export async function loginUser(email, password) {
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
-    password
+    password,
   });
 
   if (error) throw error;
   return data;
 }
 
-// Logout
-export async function logout() {
-  await supabase.auth.signOut();
-  localStorage.removeItem('token');
+// Logout User
+export async function logoutUser() {
+  const { error } = await supabase.auth.signOut();
+  if (error) throw error;
 }
