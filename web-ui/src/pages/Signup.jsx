@@ -42,7 +42,6 @@ export default function Signup() {
       setEmail("");
       setPassword("");
       setConfirmPassword("");
-
     } catch (err) {
       setMessage(err.message || "Signup failed");
     } finally {
