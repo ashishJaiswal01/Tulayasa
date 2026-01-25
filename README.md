@@ -25,33 +25,36 @@ Tulayasa is a modern web application that promotes natural wellness and lifestyl
 - **Supabase Client** - Authentication and database client
 
 ### Backend
-- **Express.js** - Web server framework
+- **Express.js** - Web server framework (located in `core/` folder)
 - **Node.js** - Runtime environment
 - **PostgreSQL** - Database (via Supabase)
 - **CORS** - Cross-origin resource sharing
 
+The backend uses a modular structure in the `core/` folder, making it easy to add new services. All API routes are organized under `core/src/routes/` and controllers under `core/src/controllers/`.
+
 ### Infrastructure
 - **Supabase** - Backend as a Service (Database & Auth)
-- **Cloudflare Workers** - Serverless functions (optional)
+- **Cloudflare Workers** - Review service API (Production: `royal-flower-caaf.jais-ashish.workers.dev`)
+- **Express.js Server** - Backend API server (Local development)
 - **GitHub Pages** - Frontend deployment
 
-## 📁 Complete Project Structure
+## 📁 Project Structure
 
 ```
 Tulayasa/
-├── core/                          # Core backend services (renamed from review-worker)
-│   ├── config/
+├── core/                          # Core backend services
+│   ├── config/                    # Configuration files
 │   │   └── server.js              # Server configuration
-│   ├── db/
-│   │   └── connection.js         # Database connection utilities
-│   ├── src/
+│   ├── db/                        # Database utilities
+│   │   └── connection.js         # Database connection and helpers
+│   ├── src/                       # Source code
 │   │   ├── controllers/           # Request handlers (business logic)
 │   │   │   ├── reviewController.js
 │   │   │   └── .example.controller.js  # Template for new services
 │   │   ├── routes/                # Express route definitions
-│   │   ├── index.js             # Main route aggregator (register all services here)
-│   │   ├── reviews.js             # Review service routes
-│   │   └── .example.routes.js     # Template for new routes
+│   │   │   ├── index.js           # Main route aggregator
+│   │   │   ├── reviews.js         # Review service routes
+│   │   │   └── .example.routes.js # Template for new routes
 │   │   └── middleware/            # Custom Express middleware
 │   │       ├── logger.js          # Request/error logging
 │   │       └── errorHandler.js    # Error handling
@@ -71,18 +74,9 @@ Tulayasa/
 │   │   ├── supabaseClient.js      # Supabase client configuration
 │   │   └── index.css              # Global styles
 │   ├── dist/                      # Production build output
-│   ├── public/                    # Static assets
-│   ├── package.json
+│   ├── package.json               # Frontend dependencies and scripts
 │   ├── vite.config.js
 │   └── tailwind.config.js
-│
-├── review-worker/                 # Cloudflare Worker (legacy/optional)
-│   └── royal-flower-caaf/         # Worker project
-│       ├── src/
-│       │   ├── Controllers/
-│       │   ├── routes/
-│       │   └── index.ts
-│       └── package.json
 │
 ├── db/
 │   └── init.sql                   # Database schema initialization
@@ -92,8 +86,6 @@ Tulayasa/
 │       └── deploy.yml             # GitHub Actions deployment workflow
 │
 ├── server.js                      # Express.js server entry point
-├── certs/                         # SSL certificates (if any)
-├── public/                        # Root public assets
 └── README.md                      # This file
 ```
 
@@ -101,13 +93,10 @@ Tulayasa/
 
 ### Prerequisites
 
-Before you begin, ensure you have the following installed:
-
 - **Node.js** (v20 or higher) - [Download](https://nodejs.org/)
-- **npm** (comes with Node.js) or **yarn**
+- **npm** (comes with Node.js)
 - **Git** - [Download](https://git-scm.com/)
 - **Supabase Account** - [Sign up](https://supabase.com/) (free tier available)
-- **(Optional) Cloudflare Account** - For worker deployment
 
 ### Step 1: Clone the Repository
 
@@ -118,23 +107,12 @@ cd Tulayasa
 
 ### Step 2: Install Dependencies
 
-#### Install Root Dependencies
-
-The root directory uses dependencies from `web-ui/package.json`. Install them:
+Install frontend dependencies (backend dependencies are included):
 
 ```bash
-# Install web-ui dependencies
 cd web-ui
 npm install
 cd ..
-```
-
-#### Install Backend Dependencies
-
-The backend uses the same dependencies. If you need to install Express and other backend packages at root level:
-
-```bash
-npm install express cors dotenv
 ```
 
 ### Step 3: Set Up Environment Variables
@@ -144,7 +122,6 @@ npm install express cors dotenv
 Create a `.env` file in the root directory:
 
 ```bash
-# Create .env file
 touch .env
 ```
 
@@ -182,44 +159,50 @@ Add the following:
 # Supabase Configuration (for Vite)
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+
+# API Configuration (optional - defaults to Cloudflare Worker in production)
+# For local development, set to: http://localhost:3001/api/reviews
+# For production, uses: https://royal-flower-caaf.jais-ashish.workers.dev/api/reviews
+VITE_API_URL=https://royal-flower-caaf.jais-ashish.workers.dev/api/reviews
 ```
 
-> **Note:** Vite requires the `VITE_` prefix for environment variables to be exposed to the client.
+> **Note:** 
+> - Vite requires the `VITE_` prefix for environment variables to be exposed to the client.
+> - `VITE_API_URL` is optional. If not set, the frontend will use the Cloudflare Worker URL by default.
+> - For local development, set `VITE_API_URL=http://localhost:3001/api/reviews` to use the local Express server.
 
 ### Step 4: Set Up the Database
 
 1. Go to your Supabase project dashboard
 2. Navigate to **SQL Editor**
-3. Run the following SQL script (or use `db/init.sql`):
+3. Run the SQL script from `db/init.sql`:
 
 ```sql
--- Create reviews table
 CREATE TABLE IF NOT EXISTS reviews (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   review TEXT NOT NULL,
   rating INTEGER CHECK (rating >= 1 AND rating <= 5),
-  status VARCHAR(50) DEFAULT 'PENDING',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+```
 
--- Create index for faster queries
-CREATE INDEX IF NOT EXISTS idx_reviews_status ON reviews(status);
-CREATE INDEX IF NOT EXISTS idx_reviews_created_at ON reviews(created_at DESC);
+**Note:** If you want to use the `status` field (PENDING/PUBLISHED) as used in the controller, add it to the table:
+
+```sql
+ALTER TABLE reviews ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'PENDING';
 ```
 
 ## 🏃 Running the Application
 
 ### Development Mode
 
-#### Option 1: Run Backend and Frontend Separately (Recommended)
+Run backend and frontend in separate terminals:
 
 **Terminal 1 - Backend Server:**
 ```bash
 # From root directory
 node server.js
-# or
-npm run server  # if script exists in package.json
 ```
 
 The backend will start on `http://localhost:3001`
@@ -232,16 +215,6 @@ npm run dev
 
 The frontend will start on `http://localhost:5173` (default Vite port)
 
-#### Option 2: Using npm scripts (if configured)
-
-```bash
-# Start backend
-npm run server
-
-# In another terminal, start frontend
-cd web-ui && npm run dev
-```
-
 ### Access the Application
 
 - **Frontend**: http://localhost:5173
@@ -251,13 +224,11 @@ cd web-ui && npm run dev
 
 ## 📝 Available Commands
 
-### Root Level Commands
+### Backend Commands (Root Directory)
 
 ```bash
 # Start the Express.js server
 node server.js
-# or
-npm run server  # if configured
 
 # Check server syntax
 node --check server.js
@@ -281,54 +252,44 @@ npm run preview
 npm run deploy
 ```
 
-### Backend Commands
-
-The backend doesn't have a separate package.json. All commands are run from the root:
-
-```bash
-# Start server
-node server.js
-
-# Check for syntax errors
-node --check server.js
-```
-
-### Cloudflare Worker Commands (Optional)
-
-```bash
-cd review-worker/royal-flower-caaf
-
-# Start worker in development mode
-npm run dev
-
-# Deploy worker to Cloudflare
-npm run deploy
-
-# Run tests
-npm test
-```
-
 ## 🌐 API Endpoints
 
 ### Base URL
-- **Development**: `http://localhost:3001`
-- **Production**: `https://your-domain.com`
+- **Development**: `http://localhost:3001` (local Express server)
+- **Production**: `https://royal-flower-caaf.jais-ashish.workers.dev` (Cloudflare Worker)
 
 ### Available Endpoints
 
-#### Reviews Service
+#### Reviews Service (Cloudflare Worker)
+
+**Production URL:** `https://royal-flower-caaf.jais-ashish.workers.dev`
+
 - `GET /api/reviews` - Get all published reviews
   ```bash
+  # Production
+  curl https://royal-flower-caaf.jais-ashish.workers.dev/api/reviews
+  
+  # Local development
   curl http://localhost:3001/api/reviews
   ```
 
 - `GET /api/reviews/:id` - Get a single review by ID
   ```bash
+  # Production
+  curl https://royal-flower-caaf.jais-ashish.workers.dev/api/reviews/1
+  
+  # Local development
   curl http://localhost:3001/api/reviews/1
   ```
 
 - `POST /api/reviews` - Create a new review
   ```bash
+  # Production
+  curl -X POST https://royal-flower-caaf.jais-ashish.workers.dev/api/reviews \
+    -H "Content-Type: application/json" \
+    -d '{"name":"John Doe","review":"Great service!","rating":5}'
+  
+  # Local development
   curl -X POST http://localhost:3001/api/reviews \
     -H "Content-Type: application/json" \
     -d '{"name":"John Doe","review":"Great service!","rating":5}'
@@ -337,6 +298,10 @@ npm test
 #### Health Check
 - `GET /health` - Server health status
   ```bash
+  # Production (Cloudflare Worker)
+  curl https://royal-flower-caaf.jais-ashish.workers.dev/health
+  
+  # Local development
   curl http://localhost:3001/health
   ```
 
@@ -366,13 +331,14 @@ npm test
 
 ### Reviews Table
 
+As defined in `db/init.sql`:
+
 ```sql
-CREATE TABLE reviews (
+CREATE TABLE IF NOT EXISTS reviews (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   review TEXT NOT NULL,
   rating INTEGER CHECK (rating >= 1 AND rating <= 5),
-  status VARCHAR(50) DEFAULT 'PENDING',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
@@ -382,8 +348,12 @@ CREATE TABLE reviews (
 - `name` - Reviewer's name
 - `review` - Review text content
 - `rating` - Rating from 1 to 5
-- `status` - Review status (PENDING, PUBLISHED, REJECTED)
 - `created_at` - Timestamp of creation
+
+**Note:** The controller code uses a `status` field. If you want to use it, add:
+```sql
+ALTER TABLE reviews ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'PENDING';
+```
 
 ## 🚢 Deployment
 
@@ -416,73 +386,44 @@ npm run deploy
 
 ### Backend Deployment
 
-The Express.js server can be deployed to various platforms:
+#### Review Service (Currently Deployed on Cloudflare Workers)
 
-#### Option 1: Railway
+**Production URL:** `https://royal-flower-caaf.jais-ashish.workers.dev`
 
-1. Sign up at [Railway](https://railway.app/)
-2. Create a new project
-3. Connect your GitHub repository
-4. Add environment variables in Railway dashboard
-5. Deploy!
+The review service is currently deployed on **Cloudflare Workers**. The frontend is configured to use this URL by default.
 
-#### Option 2: Render
+**Cloudflare Worker Endpoints:**
+- `GET https://royal-flower-caaf.jais-ashish.workers.dev/api/reviews` - Get all published reviews
+- `POST https://royal-flower-caaf.jais-ashish.workers.dev/api/reviews` - Create a new review
+- `GET https://royal-flower-caaf.jais-ashish.workers.dev/health` - Health check
 
-1. Sign up at [Render](https://render.com/)
-2. Create a new **Web Service**
-3. Connect your GitHub repository
-4. Set build command: (leave empty or `npm install`)
-5. Set start command: `node server.js`
-6. Add environment variables
-7. Deploy!
+**To update the Cloudflare Worker:**
+1. Navigate to the Cloudflare Workers dashboard
+2. Update the worker code
+3. Deploy the changes
 
-#### Option 3: Heroku
+#### Local Express.js Server (Development)
 
-```bash
-# Install Heroku CLI
-heroku login
-
-# Create Heroku app
-heroku create tulayasa-api
-
-# Set environment variables
-heroku config:set SUPABASE_URL=your_url
-heroku config:set SUPABASE_ANON_KEY=your_key
-heroku config:set SERVER_PORT=3001
-
-# Deploy
-git push heroku main
-```
-
-#### Option 4: DigitalOcean App Platform
-
-1. Create a new app on DigitalOcean
-2. Connect your GitHub repository
-3. Configure build and run commands
-4. Add environment variables
-5. Deploy!
-
-#### Environment Variables for Production
-
-Make sure to set these in your hosting platform:
+For local development, you can run the Express.js server. Set these environment variables:
 
 ```env
 SUPABASE_URL=your_production_supabase_url
 SUPABASE_ANON_KEY=your_production_anon_key
 SUPABASE_SERVICE_KEY=your_production_service_key
 SERVER_PORT=3001
-NODE_ENV=production
+NODE_ENV=development
 ```
 
-### Cloudflare Worker Deployment (Optional)
-
-```bash
-cd review-worker/royal-flower-caaf
-
-# Configure wrangler.jsonc with your Cloudflare account ID
-# Then deploy
-npm run deploy
+To use the local server instead of Cloudflare Worker, set in `web-ui/.env`:
+```env
+VITE_API_URL=http://localhost:3001/api/reviews
 ```
+
+**Deployment Options for Express.js Server:**
+- **Railway**: Connect GitHub repo, add env vars, deploy
+- **Render**: Create Web Service, connect repo, set start command: `node server.js`
+- **Heroku**: Use Heroku CLI to deploy
+- **DigitalOcean**: Use App Platform
 
 ## 🔒 Environment Variables Reference
 
@@ -560,11 +501,9 @@ SERVER_PORT=3002
 
 **Solution:**
 ```bash
-# Install missing dependencies
-npm install express cors dotenv
-
-# Or reinstall all dependencies
-cd web-ui && npm install
+# Install missing dependencies in web-ui (they're shared)
+cd web-ui
+npm install
 ```
 
 #### 5. Build Errors
@@ -582,30 +521,59 @@ npm run build
 
 ## 🧪 Testing
 
-### Manual Testing
+### Quick Test Commands
 
-1. **Test Backend Health:**
-   ```bash
-   curl http://localhost:3001/health
-   ```
+#### Production (Cloudflare Worker)
 
-2. **Test API Endpoints:**
-   ```bash
-   # Get reviews
-   curl http://localhost:3001/api/reviews
-   
-   # Create review
-   curl -X POST http://localhost:3001/api/reviews \
-     -H "Content-Type: application/json" \
-     -d '{"name":"Test User","review":"Test review","rating":5}'
-   ```
+```bash
+# Health check
+curl https://royal-flower-caaf.jais-ashish.workers.dev/health
+
+# Get all reviews
+curl https://royal-flower-caaf.jais-ashish.workers.dev/api/reviews
+
+# Create a review
+curl -X POST https://royal-flower-caaf.jais-ashish.workers.dev/api/reviews \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Test User","review":"Test review","rating":5}'
+```
+
+#### Local Development
+
+```bash
+# Start server first
+node server.js
+
+# Then test (in another terminal)
+curl http://localhost:3001/health
+curl http://localhost:3001/api/reviews
+
+# Create a review
+curl -X POST http://localhost:3001/api/reviews \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Test User","review":"Test review","rating":5}'
+```
+
+### Comprehensive Testing Guide
+
+For detailed testing instructions, test cases, and troubleshooting, see [TESTING.md](./TESTING.md).
 
 ### Frontend Testing
 
-Open the browser console and check for errors when:
-- Loading the page
-- Submitting forms
-- Making API calls
+1. Start the frontend:
+   ```bash
+   cd web-ui
+   npm run dev
+   ```
+
+2. Open `http://localhost:5173` in your browser
+
+3. Test the review functionality:
+   - Navigate to the reviews section
+   - Submit a new review
+   - Verify it appears in the list
+
+4. Check browser console (F12) for any errors
 
 ## 📚 Additional Resources
 
@@ -667,5 +635,3 @@ For questions or support:
 ---
 
 **Tulayasa** - Embracing Natural Wellness 🌿
-
-*Last updated: 2024*

@@ -1,4 +1,6 @@
-const BASE_URL = 'https://royal-flower-caaf.jais-ashish.workers.dev/api/reviews';
+// Review service is hosted on Cloudflare Workers
+// Use environment variable for local development, otherwise use production Cloudflare Worker
+const BASE_URL = import.meta.env.VITE_API_URL || 'https://royal-flower-caaf.jais-ashish.workers.dev/api/reviews';
 
 export async function fetchReviews() {
   const res = await fetch(BASE_URL);
