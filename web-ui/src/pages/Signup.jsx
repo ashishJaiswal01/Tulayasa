@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { registerUser } from "../auth/authApi";
+import { supabase } from "../lib/supabaseClient"; // adjust path if needed
 
 export default function Signup() {
   const [email, setEmail] = useState("");
@@ -11,7 +11,7 @@ export default function Signup() {
   const handleSignup = async (e) => {
     e.preventDefault();
 
-    // basic validation
+    // Basic validation
     if (!email || !password) {
       setMessage("Email and password required.");
       return;
@@ -26,16 +26,25 @@ export default function Signup() {
       setLoading(true);
       setMessage("");
 
-      await signUp(email, password);
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
 
-      setMessage("🎉 Signup successful! Check your email to verify your account.");
-      
+      if (error) {
+        throw error;
+      }
+
+      setMessage(
+        "🎉 Signup successful! Check your email to verify your account."
+      );
+
       setEmail("");
       setPassword("");
       setConfirmPassword("");
 
     } catch (err) {
-      setMessage(err.message);
+      setMessage(err.message || "Signup failed");
     } finally {
       setLoading(false);
     }
@@ -94,7 +103,10 @@ export default function Signup() {
 
         <p className="text-center mt-3 text-sm">
           Already have an account?{" "}
-          <a href="/login" className="text-blue-600 font-semibold hover:underline">
+          <a
+            href="/login"
+            className="text-blue-600 font-semibold hover:underline"
+          >
             Log in
           </a>
         </p>

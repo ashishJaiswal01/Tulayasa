@@ -635,3 +635,6 @@ For questions or support:
 ---
 
 **Tulayasa** - Embracing Natural Wellness 🌿
+
+NOTE: service is deployed on Cloudflare. Cloudflare Worker ONLY executes what wrangler.jsonc points to: "main": "src/index.ts".
+So Cloudflare ignores Core/src/** controllers, routes, middleware. Entire service code is on cloudflare-worker/src/index.ts
