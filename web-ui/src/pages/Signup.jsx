@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { supabase } from "../supabaseClient"; // adjust path if needed
+import { supabase } from "../supabaseClient";
 
 export default function Signup() {
+  const [name, setName] = useState("");
+  const [mobile, setMobile] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -11,9 +13,8 @@ export default function Signup() {
   const handleSignup = async (e) => {
     e.preventDefault();
 
-    // Basic validation
-    if (!email || !password) {
-      setMessage("Email and password required.");
+    if (!name || !email || !password) {
+      setMessage("Name, email and password are required.");
       return;
     }
 
@@ -26,24 +27,48 @@ export default function Signup() {
       setLoading(true);
       setMessage("");
 
-      const { error } = await supabase.auth.signUp({
+      const { data,error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: {
+            display_name: name,   // shows in "Display name"
+            phone: mobile // shows in "Phone"
+          }
+        }
       });
 
       if (error) {
-        throw error;
+        setMessage(error.message);
+        return;
+      }
+      
+      // 🔴 THIS IS THE MISSING CHECK
+      if (data?.user && data.user.identities.length === 0) {
+        setMessage("This email is already registered. Please log in instead.");
+        return;
       }
 
       setMessage(
-        "🎉 Signup successful! Check your email to verify your account."
+        "🎉 Signup successful! Please check your email to verify your account."
       );
 
+      setTimeout(() => {
+        if (setCurrentPage) {
+          setCurrentPage("home");
+        } else {
+          window.location.href = "/";
+        }
+      }, 1500);
+
+      setName("");
+      setMobile("");
       setEmail("");
       setPassword("");
       setConfirmPassword("");
+
     } catch (err) {
-      setMessage(err.message || "Signup failed");
+      setMessage(err.message);
     } finally {
       setLoading(false);
     }
@@ -62,6 +87,23 @@ export default function Signup() {
             {message}
           </p>
         )}
+
+        <input
+          className="w-full p-2 border rounded-md mb-3"
+          type="text"
+          placeholder="Full Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
+
+        <input
+          className="w-full p-2 border rounded-md mb-3"
+          type="tel"
+          placeholder="Mobile number (optional)"
+          value={mobile}
+          onChange={(e) => setMobile(e.target.value)}
+        />
 
         <input
           className="w-full p-2 border rounded-md mb-3"
@@ -102,10 +144,7 @@ export default function Signup() {
 
         <p className="text-center mt-3 text-sm">
           Already have an account?{" "}
-          <a
-            href="/login"
-            className="text-blue-600 font-semibold hover:underline"
-          >
+          <a href="/login" className="text-blue-600 font-semibold hover:underline">
             Log in
           </a>
         </p>

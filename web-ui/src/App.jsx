@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { fetchReviews, submitReview } from './api/reviewsApi';
 import { supabase } from './supabaseClient';
 import Signup from "./pages/Signup";
-import login from "./pages/login";
+import Login from "./pages/Login";
 import { 
   Leaf, 
   Wind, 
@@ -53,7 +53,7 @@ const Button = ({ children, variant = 'primary', className = '', ...props }) => 
 
 // --- LAYOUT COMPONENTS ---
 
-const Navbar = ({ currentPage, setCurrentPage, user, setUser, setAuthModal }) => {
+const Navbar = ({ currentPage, setCurrentPage, user, setUser}) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
@@ -96,7 +96,8 @@ const Navbar = ({ currentPage, setCurrentPage, user, setUser, setAuthModal }) =>
                   onClick={async () => {
                     await supabase.auth.signOut();
                     localStorage.removeItem("token");
-                    setUser(null);
+                    setCurrentPage("home");
+                    //setUser(null);
                   }}
                   className="p-2 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
                 >
@@ -104,7 +105,13 @@ const Navbar = ({ currentPage, setCurrentPage, user, setUser, setAuthModal }) =>
                 </button>
               </div>
             ) : (
-              <Button onClick={() => setAuthModal(true)}>Join Movement</Button>
+              //<Button onClick={() => setAuthModal(true)}>Join Movement</Button>
+              <div className="flex space-x-3">
+              <Button onClick={() => setCurrentPage("login")}>Login</Button>
+              <Button onClick={() => setCurrentPage("signup")}>Join Movement</Button>
+            </div>
+
+
             )}
           </div>
 
@@ -129,12 +136,17 @@ const Navbar = ({ currentPage, setCurrentPage, user, setUser, setAuthModal }) =>
           ))}
           {!user && (
             <button
-              onClick={() => { setAuthModal(true); setIsMenuOpen(false); }}
+              onClick={() => {
+                setCurrentPage("signup");
+                setIsMenuOpen(false);
+              }}
               className="block w-full text-center py-3 mt-4 bg-emerald-600 text-white rounded-xl font-bold"
             >
               Get Started
             </button>
+
           )}
+
         </div>
       )}
     </nav>
@@ -144,7 +156,7 @@ const Navbar = ({ currentPage, setCurrentPage, user, setUser, setAuthModal }) =>
 
 // --- FEATURE COMPONENTS ---
 
-const AuthModal = ({ isOpen, onClose, setUser }) => {
+/* const AuthModal = ({ isOpen, onClose, setUser }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
 
@@ -247,7 +259,7 @@ const AuthModal = ({ isOpen, onClose, setUser }) => {
       </div>
     </div>
   );
-};
+}; */
 
 // --- PAGES ---
 
@@ -1263,46 +1275,90 @@ const Footer = () => (
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
-  const [authModal, setAuthModal] = useState(false);
+ // const [authModal, setAuthModal] = useState(false);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentPage]);
 
+  useEffect(() => {
+    // Restore existing session on refresh
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session?.user) {
+        setUser({
+          name:
+            data.session.user.user_metadata.display_name ||
+            data.session.user.email.split("@")[0],
+          email: data.session.user.email,
+          phone: data.session.user.user_metadata.phone
+        });
+      }
+    });
+
+    // Listen to auth changes
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (session?.user) {
+          setUser({
+            name:
+              session.user.user_metadata.display_name ||
+              session.user.email.split("@")[0],
+            email: session.user.email,
+            phone: session.user.user_metadata.phone
+          });
+        } else {
+          setUser(null);
+        }
+      }
+    );
+
+    return () => authListener.subscription.unsubscribe();
+  }, []);
+
   const renderPage = () => {
-    switch(currentPage) {
+    switch (currentPage) {
       case 'home': return <HomePage setCurrentPage={setCurrentPage} />;
       case 'about': return <About />;
       case 'contact': return <Contact />;
       case 'treat': return <Treat />;
       case 'programs': return <Programs />;
       case 'reviews': return <Reviews />;
+      case 'signup': return <Signup 
+      setUser={setUser}
+      setCurrentPage={setCurrentPage}
+      />;
+      case "login":
+      return (
+        <Login
+        onLoginSuccess={(user, nextPage) => {
+          if (user) {
+            setUser(user);
+            setCurrentPage("home");
+          } else if (nextPage) {
+            setCurrentPage(nextPage);
+          }
+        }}
+      />
+      );
       default: return <HomePage setCurrentPage={setCurrentPage} />;
     }
   };
 
   return (
-    <div className="min-h-screen font-sans bg-white selection:bg-emerald-200 selection:text-emerald-900">
-      <Navbar 
-        currentPage={currentPage} 
-        setCurrentPage={setCurrentPage} 
-        user={user} 
+    <div className="min-h-screen font-sans bg-white">
+      <Navbar
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        user={user}
         setUser={setUser}
-        setAuthModal={setAuthModal}
       />
-      
-      <main className="pt-20 transition-all duration-500">
+
+      <main className="pt-20">
         {renderPage()}
       </main>
 
       <Footer />
-
-      <AuthModal 
-        isOpen={authModal} 
-        onClose={() => setAuthModal(false)} 
-        setUser={setUser} 
-      />
     </div>
   );
 }
