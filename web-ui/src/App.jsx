@@ -3,6 +3,7 @@ import { fetchReviews, submitReview } from './api/reviewsApi';
 import { supabase } from './supabaseClient';
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import Contact from "./pages/Contact";
 import { 
   Leaf, 
   Wind, 
