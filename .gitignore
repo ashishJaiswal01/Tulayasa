@@ -1,0 +1,10 @@
+node_modules/
+web-ui/node_modules/
+dist/
+web-ui/dist/
+.vite/
+.env
+.env.*
+# vite cache
+.vite/
+web-ui/.vite/
