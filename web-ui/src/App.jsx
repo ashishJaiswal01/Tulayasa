@@ -423,61 +423,87 @@ const About = () => {
           </div>
         </div>
 
-        {/* My Journey */}
-        <div className="relative">
-          <div className="absolute -inset-4 bg-gradient-to-r from-emerald-200/30 to-stone-100 rounded-[3rem] blur-xl opacity-50" />
-          <div className="relative bg-white rounded-[3rem] p-10 md:p-14 shadow-2xl border-2 border-emerald-100">
-            <div className="flex items-center justify-center mb-6">
-              <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 p-4 rounded-full shadow-lg">
-                <Sun className="h-8 w-8 text-white" />
-              </div>
-            </div>
-            <h3 className="text-3xl md:text-4xl font-black text-emerald-950 text-center mb-10">
-              My Journey
-            </h3>
-            <div className="max-w-4xl mx-auto">
-              <div className="space-y-6 text-lg text-gray-700 leading-relaxed">
-                <div className="bg-emerald-50/50 rounded-2xl p-6 border-l-4 border-emerald-500">
-                  <p>
-                    <span className="font-semibold text-emerald-900">Fifteen years ago, I was diagnosed with endometriosis.</span>
-                    Painful periods, heavy bleeding, and constant discomfort became a part of my life. Like many others, I initially depended on allopathic treatment. In the hope of relief, I even underwent left ovary surgery, believing the problem would end there — but it didn't.
-                  </p>
-                </div>
-                <div className="bg-stone-50 rounded-2xl p-6 border-l-4 border-stone-300">
-                  <p>
-                    After 8–10 years, the condition returned, stronger and more painful. I consulted doctors across cities, only to be advised uterus and ovary removal, along with lifelong hormonal medication. The fear of future health complications pushed me into deep emotional distress.
-                  </p>
-                </div>
-                <div className="bg-emerald-50/50 rounded-2xl p-6 border-l-4 border-emerald-500">
-                  <p>
-                    During this phase, I began researching deeply — reading, learning, and understanding endometriosis beyond symptoms. That's when I realised it is a hormonal and lifestyle-related condition, and healing needed to begin from within.
-                  </p>
-                </div>
-                <div className="bg-gradient-to-r from-emerald-50 to-emerald-100/50 rounded-2xl p-6 border-l-4 border-emerald-600">
-                  <p>
-                    I started practising yoga, diet correction and natural lifestyle changes. Attending a naturopathy camp under the guidance of my Guru became a <span className="font-semibold text-emerald-900">turning point</span> — within days, I felt a profound shift in my body and mind. That experience transformed my belief system completely.
-                  </p>
-                </div>
-                <div className="bg-emerald-50/50 rounded-2xl p-6 border-l-4 border-emerald-500">
-                  <p>
-                    What began as personal healing soon became my purpose. I pursued certified studies in naturopathy and yoga, devoted years to learning, practising, and serving — including free seva for many years, which I continue to offer whenever possible.
-                  </p>
-                </div>
-                <div className="bg-gradient-to-br from-emerald-100 to-emerald-50 rounded-2xl p-6 border-l-4 border-emerald-600">
-                  <p>
-                    Today, my trust in naturopathy is not theoretical — it is <span className="font-semibold text-emerald-900">lived, experienced and deeply rooted</span>.
-                    Tulasya was born from this journey, to guide others towards natural, sustainable and compassionate healing.
-                  </p>
-                </div>
-                <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-2xl p-8 text-center shadow-xl mt-10">
-                  <p className="text-2xl md:text-3xl font-bold text-white italic">
-                    "What healed me, now guides my work."
-                  </p>
-                </div>
-              </div>
-            </div>
+    {/* My Journey */}
+    <div className="relative">
+      <div className="absolute -inset-4 bg-gradient-to-r from-emerald-200/30 to-stone-100 rounded-[3rem] blur-xl opacity-50" />
+      <div className="relative bg-white rounded-[3rem] p-10 md:p-14 shadow-2xl border-2 border-emerald-100">
+
+        <div className="flex items-center justify-center mb-6">
+          <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 p-4 rounded-full shadow-lg">
+            <Sun className="h-8 w-8 text-white" />
           </div>
         </div>
+
+        <h3 className="text-3xl md:text-4xl font-black text-emerald-950 text-center mb-10">
+          My Journey
+        </h3>
+
+        {/* 🌿 HERO IMAGE */}
+        <div className="mb-10">
+          <img
+            src="/deepshikha.jpg"
+            alt="Deepshikha healing journey"
+            className="w-full h-[420px] md:h-[460px] object-cover rounded-3xl shadow-xl"
+          />
+          <p className="text-center text-sm text-gray-500 mt-3 italic">
+            Deepshikha — Naturopath & Co-Founder of Tulasya
+          </p>
+        </div>
+
+        {/* JOURNEY STORY */}
+        <div className="max-w-4xl mx-auto space-y-6 text-lg text-gray-700 leading-relaxed">
+
+          <div className="bg-emerald-50/50 rounded-2xl p-6 border-l-4 border-emerald-500">
+            <p>
+              <span className="font-semibold text-emerald-900">
+                Fifteen years ago, I was diagnosed with endometriosis.
+              </span>
+              Painful periods, heavy bleeding, and constant discomfort became a part of my life. Like many others, I initially depended on allopathic treatment. In the hope of relief, I even underwent left ovary surgery, believing the problem would end there — but it didn't.
+            </p>
+          </div>
+
+          <div className="bg-stone-50 rounded-2xl p-6 border-l-4 border-stone-300">
+            <p>
+              After 8–10 years, the condition returned, stronger and more painful. I consulted doctors across cities, only to be advised uterus and ovary removal, along with lifelong hormonal medication. The fear of future health complications pushed me into deep emotional distress.
+            </p>
+          </div>
+
+          <div className="bg-emerald-50/50 rounded-2xl p-6 border-l-4 border-emerald-500">
+            <p>
+              During this phase, I began researching deeply — reading, learning, and understanding endometriosis beyond symptoms. That's when I realised it is a hormonal and lifestyle-related condition, and healing needed to begin from within.
+            </p>
+          </div>
+
+          <div className="bg-gradient-to-r from-emerald-50 to-emerald-100/50 rounded-2xl p-6 border-l-4 border-emerald-600">
+            <p>
+              I started practising yoga, diet correction and natural lifestyle changes. Attending a naturopathy camp under the guidance of my Guru became a
+              <span className="font-semibold text-emerald-900"> turning point</span> — within days, I felt a profound shift in my body and mind. That experience transformed my belief system completely.
+            </p>
+          </div>
+
+          <div className="bg-emerald-50/50 rounded-2xl p-6 border-l-4 border-emerald-500">
+            <p>
+              What began as personal healing soon became my purpose. I pursued certified studies in naturopathy and yoga, devoted years to learning, practising, and serving — including free seva for many years, which I continue to offer whenever possible.
+            </p>
+          </div>
+
+          <div className="bg-gradient-to-br from-emerald-100 to-emerald-50 rounded-2xl p-6 border-l-4 border-emerald-600">
+            <p>
+              Today, my trust in naturopathy is not theoretical — it is
+              <span className="font-semibold text-emerald-900"> lived, experienced and deeply rooted</span>.
+              Tulasya was born from this journey, to guide others towards natural, sustainable and compassionate healing.
+            </p>
+          </div>
+
+          <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-2xl p-8 text-center shadow-xl mt-10">
+            <p className="text-2xl md:text-3xl font-bold text-white italic">
+              "What healed me, now guides my work."
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
 
         {/* Our Philosophy */}
         <div className="relative mt-20">
@@ -1154,7 +1180,7 @@ const Footer = () => (
           <div className="flex space-x-8 mb-6 md:mb-0">
             <button className="hover:text-emerald-400">Disclaimer</button>
             <button className="hover:text-emerald-400">Privacy Policy</button>
-            <button className="hover:text-emerald-400">Contact</button>
+            <button className="hover:text-emerald-400">Contact Us</button>
           </div>
           <div className="flex space-x-4">
             {/* Social Media Links - placeholders */}
