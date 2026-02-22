@@ -71,7 +71,7 @@ const Navbar = ({ currentPage, setCurrentPage, user, setUser}) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20 items-center">
           <div className="flex items-center cursor-pointer group" onClick={() => setCurrentPage('home')}>
-            <img src="/Tulasaya.png" alt="Tulsaya Logo" className="h-8 w-8 md:h-10 md:w-10 mr-2 rounded-full object-cover" />
+            <img src="/Tulasaya.jpeg" alt="Tulsaya Logo" className="h-8 w-8 md:h-10 md:w-10 mr-2 rounded-full object-cover" />
             <span className="text-lg md:text-2xl font-bold tracking-tight text-emerald-900">TULASYA</span>
           </div>
 
@@ -1108,7 +1108,7 @@ const Footer = () => (
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-16 pb-20 border-b border-white/10">
         <div className="lg:col-span-2">
           <div className="flex items-center mb-8">
-            <img src="/Tulasaya.png" alt="Tulsaya Logo" className="h-8 w-8 rounded-full object-cover border-2 border-emerald-400 mr-2" />
+            <img src="/Tulasaya.jpeg" alt="Tulsaya Logo" className="h-8 w-8 rounded-full object-cover border-2 border-emerald-400 mr-2" />
             <span className="text-2xl font-black tracking-tight">TULASYA</span>
           </div>
           <p className="text-emerald-100/60 max-w-sm leading-relaxed text-lg">
